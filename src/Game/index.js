@@ -6,6 +6,7 @@ import GroupStage from '../GroupStage';
 import Qualifier from '../Qualifier';
 import QuarterFinal from '../QuarterFinal';
 import SemiFinal from '../SemiFinal';
+import Final from '../Final';
 
 class Game extends React.Component {
 
@@ -154,7 +155,9 @@ class Game extends React.Component {
         <div className='teams-wrapper'>
           <SemiFinal semiFinal={state.semiFinal} position={'left'} />
         </div>
-        <div className='teams-wrapper'></div>
+        <div className='teams-wrapper'>
+          <Final final={state.semiFinal}/>
+        </div>
         <div className='teams-wrapper'>
           <SemiFinal semiFinal={state.semiFinal} position={'right'} />
         </div>
