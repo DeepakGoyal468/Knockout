@@ -64,13 +64,9 @@ class Game extends React.Component {
 
   getGroupStageResults = () => {
     let data = [];
-    this.state.groups.forEach((item, i) => {
+    this.state.groups.forEach((item) => {
       let result = this.getResults(item.teams);
-      if (i % 2) {
         data.push({ ...{ "name": item.name }, ...result });
-      } else {
-        data.push({ ...{ "name": item.name }, ...result });
-      }
     });
     this.setState({ groupStage: data }, () => {
       this.getQualifierResults();
@@ -107,16 +103,17 @@ class Game extends React.Component {
   }
 
   render() {
+    let state = this.state;
     return (
       <div className="game">
         <div className='teams-wrapper'>
-          <Groups groups={this.state.groups} position={'left'} />
+          <Groups groups={state.groups} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={this.state.groupStage} position={'left'} />
+          <GroupStage groupStage={state.groupStage} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier />
+          <Qualifier qualifier={state.qualifier} position={'left'} />
         </div>
         <div className='teams-wrapper'>
           <QuarterFinal />
@@ -128,7 +125,7 @@ class Game extends React.Component {
           <QuarterFinal />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier />
+          <Qualifier qualifier={state.qualifier} position={'right'} />
         </div>
         <div className='teams-wrapper'>
           <GroupStage groupStage={this.state.groupStage} position={'right'} />
