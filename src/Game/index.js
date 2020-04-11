@@ -9,13 +9,16 @@ class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      groups: []
+      groups: [],
+      groupStage:[]
     }
   }
 
   componentDidMount() {
     let groups = this.generateGroups();
-    this.setState({ groups: groups });
+    this.setState({ groups: groups }, () => {
+      this.getGroupStageResults();
+    });
   }
 
   shuffle = (data) => {
@@ -56,6 +59,19 @@ class Game extends React.Component {
     return result;
   }
 
+  getGroupStageResults = () => {
+    let data = [];
+    this.state.groups.forEach((item, i) => {
+      let result = this.getResults(item.teams);
+      if (i % 2) {
+        data.push({ ...{ "name": item.name }, ...result });
+      } else {
+        data.push({ ...{ "name": item.name }, ...result });
+      }
+    });
+    this.setState({ groupStage: data });
+  }
+
   render() {
     return (
       <div className="game">
@@ -63,7 +79,7 @@ class Game extends React.Component {
           <Groups groups={ this.state.groups } position={ 'left' } />
         </div>
         <div className='teams-wrapper'>
-        <GroupStage groups={ this.state.groups } getResults={this.getResults} position={ 'left' } />
+        <GroupStage groupStage={ this.state.groupStage } position={ 'left' } />
         </div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'></div>
@@ -73,7 +89,7 @@ class Game extends React.Component {
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'>
-        <GroupStage groups={ this.state.groups } getResults={this.getResults} position={ 'right' } />
+        <GroupStage groupStage={ this.state.groupStage } position={ 'right' } />
         </div>
         <div className='teams-wrapper'>
         <Groups groups={ this.state.groups } position={ 'right' } />
