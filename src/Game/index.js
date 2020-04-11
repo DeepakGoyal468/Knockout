@@ -13,7 +13,9 @@ class Game extends React.Component {
     this.state = {
       groups: [],
       groupStage: [],
-      qualifier: []
+      qualifier: [],
+      quaterFinal: [],
+      semiFinal: []
     }
   }
 
@@ -74,32 +76,42 @@ class Game extends React.Component {
   }
 
   getQualifierResults = () => {
-    let qualifier_details = [];
+    let qualifierDetails = [];
     let groupStage = this.state.groupStage;
     for (let i = 0; i < groupStage.length; i++) {
-      let data = [];
-      if (i % 2 === 0) {
-        data.push(groupStage[i].winner, groupStage[i + 1].runnerup);
-        let result = this.getResults(data);
-        qualifier_details.push({
-          team1: groupStage[i].winner,
-          team2: groupStage[i + 1].runnerup,
-          status: 0,
-          winner: result.winner
-        });
+      let team = [];
+      if (i % 2) {
+        team.push(groupStage[i].winner, groupStage[i - 1].runnerup);
       }
       else {
-        data.push(groupStage[i].winner, groupStage[i - 1].runnerup);
-        let result = this.getResults(data);
-        qualifier_details.push({
-          team1: groupStage[i].winner,
-          team2: groupStage[i - 1].runnerup,
-          status: 0,
-          winner: result.winner
+        team.push(groupStage[i].winner, groupStage[i + 1].runnerup);
+      }
+      let result = this.getResults(team);
+      qualifierDetails.push({
+        team1: team[0], team2: team[1], status: 0, winner: result.winner
+      });
+    }
+    this.setState({ qualifier: qualifierDetails }, () => {
+      this.getQuaterMatchResults(this.state.qualifier, this.state.quaterFinal);
+    });
+  }
+
+  getQuaterMatchResults = (data, stateValue) => {
+    let quaterMatchDetails = [];
+    let track = new Array(data.length).fill(0);
+    for (let i = 0; i < data.length - 2; i++) {
+      let team = [];
+      if (track[i] === 0) {
+        team.push(data[i].winner, data[i + 2].winner);
+        track[i] = 1;
+        track[i + 2] = 1;
+        let result = this.getResults(team);
+        quaterMatchDetails.push({
+          team1: team[0], team2: team[1], status: 0, winner: result.winner
         });
       }
     }
-    this.setState({ qualifier: qualifier_details });
+    this.setState({ stateValue: quaterMatchDetails });
   }
 
   render() {
