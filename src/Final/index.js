@@ -1,5 +1,6 @@
 import React from 'react';
 import './styles.css';
+import fifa from '../fifa.jpeg';
 
 class Final extends React.Component {
 
@@ -12,6 +13,7 @@ class Final extends React.Component {
           <div>
             <FinalItem type={ 'Champion' } result={ final[0].winner } />
             <FinalItem type={ 'Runner Up' } result={ final[0].looser } />
+            <img src={fifa} alt='hi' height={100} width={60}></img>
             <FinalItem type={ '3rd Place' } result={ final[1].winner } />
             <FinalItem type={ '4th Place' } result={ final[1].looser } />
           </div>
