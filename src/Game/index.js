@@ -128,10 +128,10 @@ class Game extends React.Component {
           <Qualifier qualifier={state.qualifier} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={this.state.groupStage} position={'right'} />
+          <GroupStage groupStage={state.groupStage} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Groups groups={this.state.groups} position={'right'} />
+          <Groups groups={state.groups} position={'right'} />
         </div>
       </div>
     );
