@@ -5,11 +5,12 @@ class GroupStage extends React.Component {
 
   render() {
     let groups = this.props.groups;
+    if (this.props.position === 'right') {
+      for (let i = 0; i < groups.length; i += 2){
+        [groups[i], groups[i+1]] = [groups[i+1], groups[i]];
+      }
+    }
     let data = [];
-    let store = localStorage.getItem("stageResult");
-    if (store.length) {
-      data = JSON.parse(store);
-    } else {
       groups.forEach((item, i) => {
         let result = this.props.getResults(item.teams);
         if (i % 2) {
@@ -18,8 +19,6 @@ class GroupStage extends React.Component {
           data.push({ ...{ "name": item.name }, ...result });
         }
       });
-      localStorage.setItem("stageResult", JSON.stringify(data));
-    }
     return (
       <div>
         <div>
