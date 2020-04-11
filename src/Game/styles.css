@@ -1,6 +1,6 @@
 .game {
     display: flex;
-    margin: 10px 5px;
+    margin: 0 5px;
 }
 .teams-wrapper {
     width: 9%;

@@ -10,7 +10,7 @@ class Game extends React.Component {
     super();
     this.state = {
       groups: [],
-      groupStage:[]
+      groupStage: []
     }
   }
 
@@ -79,7 +79,7 @@ class Game extends React.Component {
           <Groups groups={ this.state.groups } position={ 'left' } />
         </div>
         <div className='teams-wrapper'>
-        <GroupStage groupStage={ this.state.groupStage } position={ 'left' } />
+          <GroupStage groupStage={ this.state.groupStage } position={ 'left' } />
         </div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'></div>
@@ -89,10 +89,10 @@ class Game extends React.Component {
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'>
-        <GroupStage groupStage={ this.state.groupStage } position={ 'right' } />
+          <GroupStage groupStage={ this.state.groupStage } position={ 'right' } />
         </div>
         <div className='teams-wrapper'>
-        <Groups groups={ this.state.groups } position={ 'right' } />
+          <Groups groups={ this.state.groups } position={ 'right' } />
         </div>
       </div>
     );
