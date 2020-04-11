@@ -93,12 +93,12 @@ class Game extends React.Component {
       });
     }
     this.setState({ qualifier: qualifierDetails }, () => {
-      this.getQuaterMatchResults(this.state.qualifier, this.state.quarterFinal);
+      this.getQuarterFinalResults(this.state.qualifier);
     });
   }
 
-  getQuaterMatchResults = (data, stateValue) => {
-    let quaterMatchDetails = [];
+  getQuarterFinalResults = (data) => {
+    let quarterMatchDetails = [];
     let track = new Array(data.length).fill(0);
     for (let i = 0; i < data.length - 2; i++) {
       let team = [];
@@ -107,12 +107,34 @@ class Game extends React.Component {
         track[i] = 1;
         track[i + 2] = 1;
         let result = this.getResults(team);
-        quaterMatchDetails.push({
+        quarterMatchDetails.push({
           team1: team[0], team2: team[1], status: 0, winner: result.winner
         });
       }
     }
-    this.setState({ stateValue: quaterMatchDetails });
+    console.log(quarterMatchDetails);
+    this.setState({ quarterFinal: quarterMatchDetails }, () => {
+      this.getSemiFinalResults(this.state.quarterFinal);
+    });
+  }
+
+  getSemiFinalResults = (data) => {
+    let semiFinalDetails = [];
+    let track = new Array(data.length).fill(0);
+    for (let i = 0; i < data.length - 2; i++) {
+      let team = [];
+      if (track[i] === 0) {
+        team.push(data[i].winner, data[i + 2].winner);
+        track[i] = 1;
+        track[i + 2] = 1;
+        let result = this.getResults(team);
+        semiFinalDetails.push({
+          team1: team[0], team2: team[1], status: 0, winner: result.winner
+        });
+      }
+    }
+    console.log(semiFinalDetails);
+    this.setState({ semiFinal: semiFinalDetails });
   }
 
   render() {
@@ -120,35 +142,35 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className='teams-wrapper'>
-          <Groups groups={ state.groups } position={ 'left' } />
+          <Groups groups={state.groups} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ state.groupStage } position={ 'left' } />
+          <GroupStage groupStage={state.groupStage} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier qualifier={ state.qualifier } position={ 'left' } />
+          <Qualifier qualifier={state.qualifier} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <QuarterFinal />
+          <QuarterFinal quarterFinal={state.quarterFinal} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <SemiFinal semiFinal={state.semiFinal} position={ 'left' } />
+          <SemiFinal semiFinal={state.semiFinal} position={'left'} />
         </div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'>
-          <SemiFinal semiFinal={state.semiFinal} position={ 'right' } />
+          <SemiFinal semiFinal={state.semiFinal} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <QuarterFinal />
+          <QuarterFinal quarterFinal={state.quarterFinal} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier qualifier={ state.qualifier } position={ 'right' } />
+          <Qualifier qualifier={state.qualifier} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ state.groupStage } position={ 'right' } />
+          <GroupStage groupStage={state.groupStage} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Groups groups={ state.groups } position={ 'right' } />
+          <Groups groups={state.groups} position={'right'} />
         </div>
       </div>
     );
