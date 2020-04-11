@@ -112,7 +112,6 @@ class Game extends React.Component {
         });
       }
     }
-    console.log(quarterMatchDetails);
     this.setState({ quarterFinal: quarterMatchDetails }, () => {
       this.getSemiFinalResults(this.state.quarterFinal);
     });
@@ -129,11 +128,10 @@ class Game extends React.Component {
         track[i + 2] = 1;
         let result = this.getResults(team);
         semiFinalDetails.push({
-          team1: team[0], team2: team[1], status: 0, winner: result.winner
+          team1: team[0], team2: team[1], status: 0, winner: result.winner, looser: result.runnerup
         });
       }
     }
-    console.log(semiFinalDetails);
     this.setState({ semiFinal: semiFinalDetails });
   }
 

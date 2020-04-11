@@ -20,7 +20,7 @@ class QuarterFinal extends React.Component {
       <div>
         {quarterFinal.map((item, i) =>
           <div className='quarterFinal' key={i}>
-            <span className={'quarterFinalText' + (i % 2 ? borderClass : '')}>Quarter Final {(position === 'left') ? i + 1 : i + 2}</span>
+            <span className={'quarterFinalText' + (i % 2 ? borderClass : '')}>Quarter Final {(position === 'left') ? i + 1 : i + 3}</span>
             <span className={'quarterFinalResult' + (i % 2 ? '' : borderClass)}>{item.winner}</span>
           </div>
         )}

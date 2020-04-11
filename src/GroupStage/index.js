@@ -18,7 +18,7 @@ class GroupStage extends React.Component {
       <div>
         { groupStage.map((item, i) =>
           <div className='stageResult' key={ i }>
-            <span className={ "stageName" + (i % 2 ? borderClass : '') }>Group { item.name + (i % 2 ? ' runners up' : ' winner') }</span>
+            <span className={ "stageName" + (i % 2 ? borderClass : '') }>Group { item.name + (i % 2 ? ' runner up' : ' winner') }</span>
             <span className={ "result" + (i % 2 ? '' : borderClass) }>{ (i % 2 ? item.runnerup : item.winner) }</span>
           </div>
         ) }

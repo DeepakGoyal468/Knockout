@@ -4,21 +4,28 @@ import './styles.css';
 class SemiFinal extends React.Component {
 
   render() {
-    let semiFinal = this.props.semiFinal;
     let position = this.props.position;
-    let borderClass = position === 'right' ? ' left' : ' right';
-
-  return (
-    <div>
-     { semiFinal.map((item, i) =>
-      <div className='semiFinal' key={ i }>
-         <span className={ 'semiFinalText' + (i % 2 ? borderClass : '') }>{ (i % 2) ? 'Winner ' : 'Looser ' } of SemiFinal { i }</span>
-      <span className={'semiFinalResult' + (i % 2 ? '' : borderClass) }>{ item.winner }</span>
+    let semiFinal = this.props.semiFinal;
+    let data = []
+    if (semiFinal.length) {
+      data = position === 'left' ? semiFinal[0] : semiFinal[1];
+    }
+    return (
+      <div>
+        <SemiFinalItem type={ 'Winner' } number={ position === 'left' ? 1 : 2 } result={ data.winner } />
+        <SemiFinalItem type={ 'Looser' } number={ position === 'left' ? 1 : 2 } result={ data.looser } />
       </div>
-    ) }
+    );
+  }
+}
+
+const SemiFinalItem = (props) => {
+  return (
+    <div className='semiFinal'>
+      <span className='semiFinalText'>{ props.type } of SemiFinal { props.number }</span>
+      <span className='semiFinalResult'>{ props.result }</span>
     </div>
   );
-  }
 }
 
 export default SemiFinal;
