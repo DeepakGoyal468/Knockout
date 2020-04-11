@@ -1,0 +1,33 @@
+.quarterFinal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+}
+
+.quarterFinalText {
+    height: 50%;
+    font-size: 15px;
+    border-bottom: 1px solid black;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.quarterFinalResult {
+    height: 50%;
+    font-size: 17px;
+    font-weight: 600;
+    border-top: 1px solid black;
+    width: 100%;
+}
+
+.right {
+    border-right: 2px solid black;
+}
+
+.left {
+    border-left: 2px solid black;
+}

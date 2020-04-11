@@ -18,7 +18,8 @@
 
 .result {
     height: 50%;
-    font-size: 13px;
+    font-size: 15px;
+    font-weight: 600;
     border-top: 1px solid black;
     width: 100%;
 }

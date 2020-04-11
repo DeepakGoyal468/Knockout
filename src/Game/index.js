@@ -3,6 +3,8 @@ import Groups from '../Groups';
 import teams from '../data.json';
 import './styles.css';
 import GroupStage from '../GroupStage';
+import Qualifier from '../Qualifier';
+import QuarterFinal from '../QuarterFinal';
 
 class Game extends React.Component {
 
@@ -81,13 +83,21 @@ class Game extends React.Component {
         <div className='teams-wrapper'>
           <GroupStage groupStage={ this.state.groupStage } position={ 'left' } />
         </div>
+        <div className='teams-wrapper'>
+          <Qualifier />
+        </div>
+        <div className='teams-wrapper'>
+          <QuarterFinal />
+        </div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'></div>
         <div className='teams-wrapper'></div>
-        <div className='teams-wrapper'></div>
-        <div className='teams-wrapper'></div>
-        <div className='teams-wrapper'></div>
-        <div className='teams-wrapper'></div>
+        <div className='teams-wrapper'>
+          <QuarterFinal />
+        </div>
+        <div className='teams-wrapper'>
+          <Qualifier />
+        </div>
         <div className='teams-wrapper'>
           <GroupStage groupStage={ this.state.groupStage } position={ 'right' } />
         </div>
