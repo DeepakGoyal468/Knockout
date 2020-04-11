@@ -12,7 +12,8 @@ class Game extends React.Component {
     super();
     this.state = {
       groups: [],
-      groupStage: []
+      groupStage: [],
+      qualifier: []
     }
   }
 
@@ -71,17 +72,48 @@ class Game extends React.Component {
         data.push({ ...{ "name": item.name }, ...result });
       }
     });
-    this.setState({ groupStage: data });
+    this.setState({ groupStage: data }, () => {
+      this.getQualifierResults();
+    });
+  }
+
+  getQualifierResults = () => {
+    let qualifier_details = [];
+    let groupStage = this.state.groupStage;
+    for (let i = 0; i < groupStage.length; i++) {
+      let data = [];
+      if (i % 2 === 0) {
+        data.push(groupStage[i].winner, groupStage[i + 1].runnerup);
+        let result = this.getResults(data);
+        qualifier_details.push({
+          team1: groupStage[i].winner,
+          team2: groupStage[i + 1].runnerup,
+          status: 0,
+          winner: result.winner
+        });
+      }
+      else {
+        data.push(groupStage[i].winner, groupStage[i - 1].runnerup);
+        let result = this.getResults(data);
+        qualifier_details.push({
+          team1: groupStage[i].winner,
+          team2: groupStage[i - 1].runnerup,
+          status: 0,
+          winner: result.winner
+        });
+      }
+    }
+    this.setState({ qualifier: qualifier_details });
   }
 
   render() {
     return (
       <div className="game">
         <div className='teams-wrapper'>
-          <Groups groups={ this.state.groups } position={ 'left' } />
+          <Groups groups={this.state.groups} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ this.state.groupStage } position={ 'left' } />
+          <GroupStage groupStage={this.state.groupStage} position={'left'} />
         </div>
         <div className='teams-wrapper'>
           <Qualifier />
@@ -99,10 +131,10 @@ class Game extends React.Component {
           <Qualifier />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ this.state.groupStage } position={ 'right' } />
+          <GroupStage groupStage={this.state.groupStage} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Groups groups={ this.state.groups } position={ 'right' } />
+          <Groups groups={this.state.groups} position={'right'} />
         </div>
       </div>
     );
