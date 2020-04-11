@@ -1,8 +1,6 @@
 .game {
     display: flex;
-    margin: 0 5px;
 }
 .teams-wrapper {
-    width: 9%;
-    /* border-right: 1px solid black; */
+    width: 9.1%;
 }
