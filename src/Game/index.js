@@ -17,7 +17,8 @@ class Game extends React.Component {
       groupStage: [],
       qualifier: [],
       quarterFinal: [],
-      semiFinal: []
+      semiFinal: [],
+      final: []
     }
   }
 
@@ -99,7 +100,7 @@ class Game extends React.Component {
   }
 
   getQuarterFinalResults = (data) => {
-    let quarterMatchDetails = [];
+    let quarterFinalDetails = [];
     let track = new Array(data.length).fill(0);
     for (let i = 0; i < data.length - 2; i++) {
       let team = [];
@@ -108,12 +109,12 @@ class Game extends React.Component {
         track[i] = 1;
         track[i + 2] = 1;
         let result = this.getResults(team);
-        quarterMatchDetails.push({
+        quarterFinalDetails.push({
           team1: team[0], team2: team[1], status: 0, winner: result.winner
         });
       }
     }
-    this.setState({ quarterFinal: quarterMatchDetails }, () => {
+    this.setState({ quarterFinal: quarterFinalDetails }, () => {
       this.getSemiFinalResults(this.state.quarterFinal);
     });
   }
@@ -133,7 +134,25 @@ class Game extends React.Component {
         });
       }
     }
-    this.setState({ semiFinal: semiFinalDetails });
+    this.setState({ semiFinal: semiFinalDetails }, () => {
+      this.getFinalResults(this.state.semiFinal);
+    });
+  }
+
+  getFinalResults = (data) => {
+    let finalMatchDetails = [];
+    for (let i = 0; i < data.length; i++) {
+      let team = [];
+      if (i % 2)
+        team.push(data[i].looser, data[i - 1].looser);
+      else
+        team.push(data[i].winner, data[i + 1].winner);
+      let result = this.getResults(team);
+      finalMatchDetails.push({
+        team1: team[0], team2: team[1], status: 0, winner: result.winner, looser: result.runnerup
+      });
+    }
+    this.setState({ final: finalMatchDetails });
   }
 
   render() {
@@ -156,7 +175,7 @@ class Game extends React.Component {
           <SemiFinal semiFinal={state.semiFinal} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <Final final={state.semiFinal}/>
+          <Final final={state.final} />
         </div>
         <div className='teams-wrapper'>
           <SemiFinal semiFinal={state.semiFinal} position={'right'} />
