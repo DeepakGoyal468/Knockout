@@ -1,0 +1,32 @@
+.group {  
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.even {
+    color: #5c8b99;
+}
+
+.odd {
+    color: #1e4652;
+}
+
+.groupName {
+    font-size: 26px;
+    width: 25%;
+    font-weight: bolder;
+}
+
+.teams {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 75%;
+}
+
+.teamName{
+    font-weight: 500;
+}
+

@@ -1,0 +1,8 @@
+.game {
+    display: flex;
+    margin: 10px 5px;
+}
+.teams-wrapper {
+    width: 9%;
+    border-right: 1px solid black;
+}
