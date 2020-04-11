@@ -25,8 +25,8 @@ class Final extends React.Component {
 const FinalItem = (props) => {
   return (
     <div className='final'>
-      <span className='finalText'>{ props.type }</span>
       <span className='finalResult'>{ props.result }</span>
+      <span className='finalText'>{ props.type }</span>
     </div>
   );
 }
