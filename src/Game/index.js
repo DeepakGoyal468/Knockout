@@ -15,10 +15,15 @@ class Game extends React.Component {
     this.state = {
       groups: [],
       groupStage: [],
+      groupStageStatus: 0,
       qualifier: [],
+      qualifierStatus: [0,0,0,0,0,0,0],
       quarterFinal: [],
+      quarterFinalStatus: [0,0,0,0],
       semiFinal: [],
-      final: []
+      semiFinalStatus: [0,0],
+      final: [],
+      finalStatus: [0,0]
     }
   }
 
@@ -27,6 +32,10 @@ class Game extends React.Component {
     this.setState({ groups: groups }, () => {
       this.getGroupStageResults();
     });
+  }
+
+  startTournament = () => {
+    
   }
 
   shuffle = (data) => {
