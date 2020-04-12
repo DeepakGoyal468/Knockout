@@ -23,7 +23,7 @@ const SemiFinalItem = (props) => {
   return (
     <div className='semiFinal'>
       <span className='semiFinalText'>{ props.type } of SemiFinal { props.number }</span>
-      <span className='semiFinalResult'>{ props.result }</span>
+      <span className='semiFinalResult'>{ props.result ? props.result : '---' }</span>
     </div>
   );
 }

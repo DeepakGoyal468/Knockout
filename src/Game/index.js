@@ -17,7 +17,7 @@ class Game extends React.Component {
       groupStage: [],
       groupStageStatus: 0,
       qualifier: [],
-      qualifierStatus: [0, 0, 0, 0, 0, 0, 0, 2],
+      qualifierStatus: [0, 0, 0, 0, 0, 0, 0, 0],
       quarterFinal: [],
       quarterFinalStatus: [0, 0, 0, 2],
       semiFinal: [],
@@ -109,12 +109,13 @@ class Game extends React.Component {
   getQualifierResults = () => {
     let qualifierDetails = [];
     let groupStage = this.state.groupStage;
-    let groupStageStatus = this.state.groupStageStatus;
+    let qualifierStatus = this.state.qualifierStatus;
     for (let i = 0; i < groupStage.length; i++) {
       setTimeout(() => {
         let team = [];
-        groupStageStatus[i] = 1;
-        this.setstate({ groupStageStatus: groupStageStatus })
+        console.log(qualifierStatus);
+        qualifierStatus[i] = 1;
+        this.setState({ qualifierStatus: qualifierStatus })
         if (i % 2) {
           team.push(groupStage[i].winner, groupStage[i - 1].runnerup);
         }
@@ -125,13 +126,13 @@ class Game extends React.Component {
         qualifierDetails.push({
           winner: result.winner, looser: result.runnerup
         });
-        groupStageStatus[i] = 2;
-        this.setstate({ groupStageStatus: groupStageStatus, qualifier: qualifierDetails })
+        qualifierStatus[i] = 2;
+        this.setState({ qualifierStatus: qualifierStatus, qualifier: qualifierDetails })
       }, 1000 * i);
 
     }
     this.setState({ qualifier: qualifierDetails }, () => {
-      this.startTournament();;
+      this.startTournament()
     });
   }
 
