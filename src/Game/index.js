@@ -44,7 +44,7 @@ class Game extends React.Component {
       this.getGroupStageResults();
     }
     else if (!isQualifierDone) {
-      this.getQualifierResults();
+      this.startQualifier();
     }
     else if (!isQuarterFinalDone) {
       this.getQuarterFinalResults();
@@ -106,32 +106,71 @@ class Game extends React.Component {
     });
   }
 
-  getQualifierResults = () => {
-    debugger;
-    let qualifierDetails = [];
-    let groupStage = this.state.groupStage;
-    let qualifierStatus = this.state.qualifierStatus;
-    for (let i = 0; i < groupStage.length; i++) {
-      setTimeout(() => {
-        let team = [];
-        console.log(qualifierStatus);
-        qualifierStatus[i] = 1;
-        this.setState({ qualifierStatus: qualifierStatus })
-        if (i % 2) {
-          team.push(groupStage[i].winner, groupStage[i - 1].runnerup);
-        }
-        else {
-          team.push(groupStage[i].winner, groupStage[i + 1].runnerup);
-        }
-        let result = this.getResults(team);
-        qualifierDetails.push({
-          winner: result.winner, looser: result.runnerup
-        });
-        qualifierStatus[i] = 2;
-        this.setState({ qualifierStatus: qualifierStatus, qualifier: qualifierDetails })
-      }, 1000 * i);
-    }
-    this.startTournament()
+  getStartIndex = statusArray => {
+    let runningIndex = statusArray.indexOf(1);
+    let upComingIndex = statusArray.indexOf(0);
+    let resumeIndex =
+      runningIndex !== -1
+        ? runningIndex
+        : upComingIndex !== -1
+        ? upComingIndex
+        : statusArray.length;
+    return resumeIndex;
+  };
+
+  startQualifier = () => {
+    let qualifierStatus = [...this.state.qualifierStatus];
+    let index = this.getStartIndex(qualifierStatus);
+    qualifierStatus[index] = 1;
+    this.setState({
+      qualifierStatus : qualifierStatus
+    },() => {
+      console.log(index);
+      this.getQualifierResults(index);
+    })
+  }
+
+  getQualifierResults = (matchId) => {
+    if(matchId < 8) {
+      let qualifierDetails = this.state.qualifier;
+      let qualifierStatus = [...this.state.qualifierStatus];
+      let groupStage = this.state.groupStage;
+      
+      //for (let i = 0; i < groupStage.length; i++) {
+      //  setTimeout(() => {
+          let team = [];
+          console.log(qualifierStatus);
+          if (matchId % 2) {
+            team.push(groupStage[matchId].winner, groupStage[matchId - 1].runnerup);
+          }
+          else {
+            team.push(groupStage[matchId].winner, groupStage[matchId + 1].runnerup);
+          }
+          let result = this.getResults(team);
+          console.log(result);
+          qualifierDetails.push({
+            winner: result.winner, looser: result.runnerup
+          });
+          console.log(qualifierDetails);
+          if(matchId !== 7 )
+          {
+            qualifierStatus[matchId+1] = 1;
+          }
+          qualifierStatus[matchId] = 2;
+          setTimeout(() => {
+            this.setState({ qualifierStatus: qualifierStatus, qualifier: qualifierDetails });
+            this.getQualifierResults(matchId+1)
+          }
+          ,1000);
+      }
+      else {
+        //this.startTournament();
+      }
+    
+    // //}
+    // this.setState({ qualifier: qualifierDetails }, () => {
+    //   this.startTournament()
+    // });
   }
 
   getQuarterFinalResults = () => {
@@ -150,7 +189,7 @@ class Game extends React.Component {
         quarterFinalDetails.push({
           winner: result.winner, looser: result.runnerup
         });
-        quarterFinalStatus[i] = 2;
+        quarterFinalStatus[i] = 1;
       }
     }
     this.setState({ quarterFinal: quarterFinalDetails }, () => {
@@ -186,6 +225,7 @@ class Game extends React.Component {
   getFinalResults = (data) => {
     let finalMatchDetails = [];
     let semiFinal = this.state.semiFinal;
+    let finalStatus = this.state.finalStatus;
     for (let i = 0; i < semiFinal.length; i++) {
       let team = [];
       if (i % 2)
@@ -207,37 +247,35 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className='teams-wrapper'>
-          <Groups groups={ state.groups } position={ 'left' } />
+          <Groups groups={state.groups} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ state.groupStage } position={ 'left' } />
+          <GroupStage groupStage={state.groupStage} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier qualifier={ state.qualifier } position={ 'left' } />
         </div>
         <div className='teams-wrapper'>
-          <QuarterFinal quarterFinal={ state.quarterFinal } position={ 'left' } />
+          <QuarterFinal quarterFinal={state.quarterFinal} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <SemiFinal semiFinal={ state.semiFinal } position={ 'left' } />
+          <SemiFinal semiFinal={state.semiFinal} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <Final final={ state.final } />
+          <Final final={state.final} />
         </div>
         <div className='teams-wrapper'>
-          <SemiFinal semiFinal={ state.semiFinal } position={ 'right' } />
+          <SemiFinal semiFinal={state.semiFinal} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <QuarterFinal quarterFinal={ state.quarterFinal } position={ 'right' } />
+          <QuarterFinal quarterFinal={state.quarterFinal} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier qualifier={ state.qualifier } position={ 'right' } />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ state.groupStage } position={ 'right' } />
+          <GroupStage groupStage={state.groupStage} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Groups groups={ state.groups } position={ 'right' } />
+          <Groups groups={state.groups} position={'right'} />
         </div>
       </div>
     );
