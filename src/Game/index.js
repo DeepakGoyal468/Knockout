@@ -19,11 +19,11 @@ class Game extends React.Component {
       qualifier: [],
       qualifierStatus: [0, 0, 0, 0, 0, 0, 0, 0],
       quarterFinal: [],
-      quarterFinalStatus: [0, 0, 0, 2],
+      quarterFinalStatus: [0, 0, 0, 0],
       semiFinal: [],
-      semiFinalStatus: [0, 2],
+      semiFinalStatus: [0, 0],
       final: [],
-      finalStatus: [0, 2]
+      finalStatus: [0, 0]
     }
   }
 
@@ -44,21 +44,20 @@ class Game extends React.Component {
       this.getGroupStageResults();
     }
     else if (!isQualifierDone) {
-      this.startQualifier();
+      this.startQualifierMatches();
     }
     else if (!isQuarterFinalDone) {
-      this.getQuarterFinalResults();
+      this.startQuarterFinal();
     }
     else if (!isSemiFinalDone) {
-      this.getSemiFinalResults();
+      this.startSemiFinal();
     }
     else if (!isFinalDone) {
-      this.getFinalResults();
+      this.startFinal();
     }
   }
 
-  shuffle = (data) => {
-    let list = JSON.parse(JSON.stringify(data));
+  shuffle = (list) => {
     for (let i = list.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [list[i], list[j]] = [list[j], list[i]];
@@ -66,8 +65,20 @@ class Game extends React.Component {
     return list;
   }
 
+  getMatchStartIndex = statusArray => {
+    let currentIndex = statusArray.indexOf(1);
+    let nextIndex = statusArray.indexOf(0);
+    let startIndex =
+      currentIndex !== -1
+        ? currentIndex
+        : nextIndex !== -1
+          ? nextIndex
+          : statusArray.length;
+    return startIndex;
+  };
+
   generateGroups = () => {
-    let teamList = this.shuffle(teams);
+    let teamList = this.shuffle(JSON.parse(JSON.stringify(teams)));
     let groups = [];
     let char = 65;
     for (let i = 0; i < teamList.length; i += 4) {
@@ -95,151 +106,191 @@ class Game extends React.Component {
     return result;
   }
 
+  // startGroupMatches = () => {
+  //   let groupStageStatus = [...this.state.groupStageStatus];
+  //   groupStageStatus = 1;
+  //   this.setState({
+  //     groupStageStatus: groupStageStatus
+  //   }, () => {
+  //     this.getGroupStageResults();
+  //   })
+  // }
+
   getGroupStageResults = () => {
     let data = [];
     this.state.groups.forEach((item) => {
       let result = this.getResults(item.teams);
       data.push({ ...{ "name": item.name }, ...result });
     });
+
     this.setState({ groupStage: data, groupStageStatus: 2 }, () => {
       this.startTournament();
     });
+
   }
 
-  getStartIndex = statusArray => {
-    let runningIndex = statusArray.indexOf(1);
-    let upComingIndex = statusArray.indexOf(0);
-    let resumeIndex =
-      runningIndex !== -1
-        ? runningIndex
-        : upComingIndex !== -1
-        ? upComingIndex
-        : statusArray.length;
-    return resumeIndex;
-  };
-
-  startQualifier = () => {
+  startQualifierMatches = () => {
     let qualifierStatus = [...this.state.qualifierStatus];
-    let index = this.getStartIndex(qualifierStatus);
+    let index = this.getMatchStartIndex(qualifierStatus);
     qualifierStatus[index] = 1;
     this.setState({
-      qualifierStatus : qualifierStatus
-    },() => {
-      console.log(index);
+      qualifierStatus: qualifierStatus
+    }, () => {
       this.getQualifierResults(index);
     })
   }
 
   getQualifierResults = (matchId) => {
-    if(matchId < 8) {
-      let qualifierDetails = this.state.qualifier;
+    if (matchId < 8) {
+      let qualifier = this.state.qualifier;
       let qualifierStatus = [...this.state.qualifierStatus];
       let groupStage = this.state.groupStage;
-      
-      //for (let i = 0; i < groupStage.length; i++) {
-      //  setTimeout(() => {
-          let team = [];
-          console.log(qualifierStatus);
-          if (matchId % 2) {
-            team.push(groupStage[matchId].winner, groupStage[matchId - 1].runnerup);
-          }
-          else {
-            team.push(groupStage[matchId].winner, groupStage[matchId + 1].runnerup);
-          }
-          let result = this.getResults(team);
-          console.log(result);
-          qualifierDetails.push({
-            winner: result.winner, looser: result.runnerup
-          });
-          console.log(qualifierDetails);
-          if(matchId !== 7 )
-          {
-            qualifierStatus[matchId+1] = 1;
-          }
-          qualifierStatus[matchId] = 2;
-          setTimeout(() => {
-            this.setState({ qualifierStatus: qualifierStatus, qualifier: qualifierDetails });
-            this.getQualifierResults(matchId+1)
-          }
-          ,1000);
+      let team = [];
+      if (matchId % 2) {
+        team.push(groupStage[matchId].winner, groupStage[matchId - 1].runnerup);
       }
       else {
-        //this.startTournament();
+        team.push(groupStage[matchId].winner, groupStage[matchId + 1].runnerup);
       }
-    
-    // //}
-    // this.setState({ qualifier: qualifierDetails }, () => {
-    //   this.startTournament()
-    // });
-  }
-
-  getQuarterFinalResults = () => {
-    let quarterFinalDetails = [];
-    let qualifier = this.state.qualifier;
-    let quarterFinalStatus = this.state.quarterFinalStatus;
-    let track = new Array(qualifier.length).fill(0);
-    for (let i = 0; i < qualifier.length - 2; i++) {
-      let team = [];
-      quarterFinalStatus[i] = 1;
-      if (track[i] === 0) {
-        team.push(qualifier[i].winner, qualifier[i + 2].winner);
-        track[i] = 1;
-        track[i + 2] = 1;
-        let result = this.getResults(team);
-        quarterFinalDetails.push({
-          winner: result.winner, looser: result.runnerup
-        });
-        quarterFinalStatus[i] = 1;
-      }
-    }
-    this.setState({ quarterFinal: quarterFinalDetails }, () => {
-      this.startTournament();;
-    });
-  }
-
-  getSemiFinalResults = () => {
-    let semiFinalDetails = [];
-    let quarterFinal = this.state.quarterFinal;
-    let semiFinalStatus = this.state.semiFinalStatus;
-    let track = new Array(quarterFinal.length).fill(0);
-    for (let i = 0; i < quarterFinal.length - 2; i++) {
-      let team = [];
-      semiFinalStatus[i] = 1;
-      if (track[i] === 0) {
-        team.push(quarterFinal[i].winner, quarterFinal[i + 2].winner);
-        track[i] = 1;
-        track[i + 2] = 1;
-        let result = this.getResults(team);
-        semiFinalDetails.push({
-          winner: result.winner, looser: result.runnerup
-        });
-        semiFinalStatus[i] = 2;
-      }
-
-    }
-    this.setState({ semiFinal: semiFinalDetails }, () => {
-      this.startTournament();
-    });
-  }
-
-  getFinalResults = (data) => {
-    let finalMatchDetails = [];
-    let semiFinal = this.state.semiFinal;
-    let finalStatus = this.state.finalStatus;
-    for (let i = 0; i < semiFinal.length; i++) {
-      let team = [];
-      if (i % 2)
-        team.push(semiFinal[i].looser, semiFinal[i - 1].looser);
-      else
-        team.push(semiFinal[i].winner, semiFinal[i + 1].winner);
       let result = this.getResults(team);
-      finalMatchDetails.push({
+      qualifier.push({
         winner: result.winner, looser: result.runnerup
       });
+      if (matchId !== 7) {
+        qualifierStatus[matchId + 1] = 1;
+      }
+      qualifierStatus[matchId] = 2;
+      setTimeout(() => {
+        this.setState({ qualifierStatus: qualifierStatus, qualifier: qualifier });
+        this.getQualifierResults(matchId + 1)
+      }
+        , 1000);
     }
-    this.setState({ final: finalMatchDetails }, () => {
+    else {
       this.startTournament();
-    });
+    }
+  }
+
+  startQuarterFinal = () => {
+    let quarterFinalStatus = [...this.state.quarterFinalStatus];
+    let index = this.getMatchStartIndex(quarterFinalStatus);
+    quarterFinalStatus[index] = 1;
+    this.setState({
+      quarterFinalStatus: quarterFinalStatus
+    }, () => {
+      this.getQuarterFinalResults(index);
+    })
+  }
+
+  getQuarterFinalResults = (matchId) => {
+    if (matchId < 4) {
+      let quarterFinal = this.state.quarterFinal;
+      let qualifier = this.state.qualifier;
+      let quarterFinalStatus = [...this.state.quarterFinalStatus];
+      let team = [];
+      if (matchId % 1 === 0) {
+        team.push(qualifier[matchId].winner, qualifier[matchId + 2].winner);
+      }
+      else {
+        team.push(qualifier[matchId + 2].winner, qualifier[matchId + 4].winner);
+      }
+      let result = this.getResults(team);
+      quarterFinal.push({
+        winner: result.winner, looser: result.runnerup
+      });
+
+      if (matchId !== 3) {
+        quarterFinalStatus[matchId + 1] = 1;
+      }
+      quarterFinalStatus[matchId] = 2;
+      setTimeout(() => {
+        this.setState({ quarterFinalStatus: quarterFinalStatus, quarterFinal: quarterFinal });
+        this.getQuarterFinalResults(matchId + 1)
+      }
+        , 1000);
+    }
+    else {
+      this.startTournament();
+    }
+  }
+
+  startSemiFinal = () => {
+    let semiFinalStatus = [...this.state.semiFinalStatus];
+    let index = this.getMatchStartIndex(semiFinalStatus);
+    semiFinalStatus[index] = 1;
+    this.setState({
+      semiFinalStatus: semiFinalStatus
+    }, () => {
+      this.getSemiFinalResults(index);
+    })
+  }
+
+  getSemiFinalResults = (matchId) => {
+    if (matchId < 2) {
+      let semiFinal = this.state.semiFinal;
+      let quarterFinal = this.state.quarterFinal;
+      let semiFinalStatus = [...this.state.semiFinalStatus];
+      let team = [];
+      team.push(quarterFinal[matchId].winner, quarterFinal[matchId + 2].winner);
+
+      let result = this.getResults(team);
+      semiFinal.push({
+        winner: result.winner, looser: result.runnerup
+      });
+      if (matchId !== 1) {
+        semiFinalStatus[matchId + 1] = 1;
+      }
+      semiFinalStatus[matchId] = 2;
+      setTimeout(() => {
+        this.setState({ semiFinalStatus: semiFinalStatus, semiFinal: semiFinal });
+        this.getSemiFinalResults(matchId + 1)
+      }
+        , 1000);
+    }
+    else {
+      this.startTournament();
+    }
+  }
+
+  startFinal = () => {
+    let finalStatus = [...this.state.finalStatus];
+    let index = this.getMatchStartIndex(finalStatus);
+    finalStatus[index] = 1;
+    this.setState({
+      finalStatus: finalStatus
+    }, () => {
+      this.getFinalResults(index);
+    })
+  }
+
+  getFinalResults = (matchId) => {
+    if (matchId < 2) {
+      let final = this.state.final;
+      let semiFinal = this.state.semiFinal;
+      let finalStatus = [...this.state.finalStatus];
+      let team = [];
+      if (matchId % 2)
+        team.push(semiFinal[matchId].looser, semiFinal[matchId - 1].looser);
+      else
+        team.push(semiFinal[matchId].winner, semiFinal[matchId + 1].winner);
+      let result = this.getResults(team);
+      final.push({
+        winner: result.winner, looser: result.runnerup
+      });
+
+      if (matchId !== 1) {
+        finalStatus[matchId + 1] = 1;
+      }
+      finalStatus[matchId] = 2;
+      setTimeout(() => {
+        this.setState({ finalStatus: finalStatus, final: final });
+        this.getFinalResults(matchId + 1)
+      }
+        , 1000);
+    }
+    else {
+      this.startTournament();
+    }
   }
 
   render() {
