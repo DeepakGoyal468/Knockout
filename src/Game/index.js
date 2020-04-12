@@ -17,25 +17,44 @@ class Game extends React.Component {
       groupStage: [],
       groupStageStatus: 0,
       qualifier: [],
-      qualifierStatus: [0,0,0,0,0,0,0],
+      qualifierStatus: [0, 0, 0, 0, 0, 0, 0, 2],
       quarterFinal: [],
-      quarterFinalStatus: [0,0,0,0],
+      quarterFinalStatus: [0, 0, 0, 2],
       semiFinal: [],
-      semiFinalStatus: [0,0],
+      semiFinalStatus: [0, 2],
       final: [],
-      finalStatus: [0,0]
+      finalStatus: [0, 2]
     }
   }
 
   componentDidMount() {
     let groups = this.generateGroups();
     this.setState({ groups: groups }, () => {
-      this.getGroupStageResults();
+      this.startTournament();
     });
   }
 
   startTournament = () => {
-    
+    let isGroupStageDone = this.state.groupStageStatus === 2;
+    let isQualifierDone = this.state.qualifierStatus.lastIndexOf(2) === 7;
+    let isQuarterFinalDone = this.state.quarterFinalStatus.lastIndexOf(2) === 3;
+    let isSemiFinalDone = this.state.semiFinalStatus.lastIndexOf(2) === 1;
+    let isFinalDone = this.state.finalStatus.lastIndexOf(2) === 1;
+    if (!isGroupStageDone) {
+      this.getGroupStageResults();
+    }
+    else if (!isQualifierDone) {
+      this.getQualifierResults();
+    }
+    else if (!isQuarterFinalDone) {
+      this.getQuarterFinalResults(this.state.qualifier);
+    }
+    else if (!isSemiFinalDone) {
+      this.getSemiFinalResults(this.state.quarterFinal);
+    }
+    else if (!isFinalDone) {
+      this.getFinalResults(this.state.semiFinal);
+    }
   }
 
   shuffle = (data) => {
@@ -82,8 +101,8 @@ class Game extends React.Component {
       let result = this.getResults(item.teams);
       data.push({ ...{ "name": item.name }, ...result });
     });
-    this.setState({ groupStage: data }, () => {
-      this.getQualifierResults();
+    this.setState({ groupStage: data, groupStageStatus: 2 }, () => {
+      this.startTournament();
     });
   }
 
@@ -100,11 +119,11 @@ class Game extends React.Component {
       }
       let result = this.getResults(team);
       qualifierDetails.push({
-        team1: team[0], team2: team[1], status: 0, winner: result.winner
+        winner: result.winner, looser: result.runnerup
       });
     }
     this.setState({ qualifier: qualifierDetails }, () => {
-      this.getQuarterFinalResults(this.state.qualifier);
+      this.startTournament();;
     });
   }
 
@@ -119,12 +138,12 @@ class Game extends React.Component {
         track[i + 2] = 1;
         let result = this.getResults(team);
         quarterFinalDetails.push({
-          team1: team[0], team2: team[1], status: 0, winner: result.winner
+          winner: result.winner, looser: result.runnerup
         });
       }
     }
     this.setState({ quarterFinal: quarterFinalDetails }, () => {
-      this.getSemiFinalResults(this.state.quarterFinal);
+      this.startTournament();;
     });
   }
 
@@ -139,12 +158,12 @@ class Game extends React.Component {
         track[i + 2] = 1;
         let result = this.getResults(team);
         semiFinalDetails.push({
-          team1: team[0], team2: team[1], status: 0, winner: result.winner, looser: result.runnerup
+          winner: result.winner, looser: result.runnerup
         });
       }
     }
     this.setState({ semiFinal: semiFinalDetails }, () => {
-      this.getFinalResults(this.state.semiFinal);
+      this.startTournament();
     });
   }
 
@@ -158,10 +177,12 @@ class Game extends React.Component {
         team.push(data[i].winner, data[i + 1].winner);
       let result = this.getResults(team);
       finalMatchDetails.push({
-        team1: team[0], team2: team[1], status: 0, winner: result.winner, looser: result.runnerup
+        winner: result.winner, looser: result.runnerup
       });
     }
-    this.setState({ final: finalMatchDetails });
+    this.setState({ final: finalMatchDetails }, () => {
+      this.startTournament();
+    });
   }
 
   render() {
