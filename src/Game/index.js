@@ -41,7 +41,7 @@ class Game extends React.Component {
     let isSemiFinalDone = this.state.semiFinalStatus.lastIndexOf(2) === 1;
     let isFinalDone = this.state.finalStatus.lastIndexOf(2) === 1;
     if (!isGroupStageDone) {
-      this.getGroupStageResults();
+      this.startGroupMatches();
     }
     else if (!isQualifierDone) {
       this.startQualifierMatches();
@@ -106,15 +106,14 @@ class Game extends React.Component {
     return result;
   }
 
-  // startGroupMatches = () => {
-  //   let groupStageStatus = [...this.state.groupStageStatus];
-  //   groupStageStatus = 1;
-  //   this.setState({
-  //     groupStageStatus: groupStageStatus
-  //   }, () => {
-  //     this.getGroupStageResults();
-  //   })
-  // }
+  startGroupMatches = () => {
+    let groupStageStatus = this.state.groupStageStatus;
+    groupStageStatus = 1;
+    setTimeout(() => {
+      this.setState({ groupStageStatus: groupStageStatus });
+      this.getGroupStageResults();
+    }, 1000);
+  }
 
   getGroupStageResults = () => {
     let data = [];
@@ -126,18 +125,15 @@ class Game extends React.Component {
     this.setState({ groupStage: data, groupStageStatus: 2 }, () => {
       this.startTournament();
     });
-
   }
 
   startQualifierMatches = () => {
     let qualifierStatus = [...this.state.qualifierStatus];
     let index = this.getMatchStartIndex(qualifierStatus);
     qualifierStatus[index] = 1;
-    this.setState({
-      qualifierStatus: qualifierStatus
-    }, () => {
+    this.setState({ qualifierStatus: qualifierStatus }, () => {
       this.getQualifierResults(index);
-    })
+    });
   }
 
   getQualifierResults = (matchId) => {
@@ -162,9 +158,8 @@ class Game extends React.Component {
       qualifierStatus[matchId] = 2;
       setTimeout(() => {
         this.setState({ qualifierStatus: qualifierStatus, qualifier: qualifier });
-        this.getQualifierResults(matchId + 1)
-      }
-        , 1000);
+        this.getQualifierResults(matchId + 1);
+      }, 1000);
     }
     else {
       this.startTournament();
@@ -175,11 +170,9 @@ class Game extends React.Component {
     let quarterFinalStatus = [...this.state.quarterFinalStatus];
     let index = this.getMatchStartIndex(quarterFinalStatus);
     quarterFinalStatus[index] = 1;
-    this.setState({
-      quarterFinalStatus: quarterFinalStatus
-    }, () => {
+    this.setState({ quarterFinalStatus: quarterFinalStatus }, () => {
       this.getQuarterFinalResults(index);
-    })
+    });
   }
 
   getQuarterFinalResults = (matchId) => {
@@ -205,9 +198,8 @@ class Game extends React.Component {
       quarterFinalStatus[matchId] = 2;
       setTimeout(() => {
         this.setState({ quarterFinalStatus: quarterFinalStatus, quarterFinal: quarterFinal });
-        this.getQuarterFinalResults(matchId + 1)
-      }
-        , 1000);
+        this.getQuarterFinalResults(matchId + 1);
+      }, 1000);
     }
     else {
       this.startTournament();
@@ -218,9 +210,7 @@ class Game extends React.Component {
     let semiFinalStatus = [...this.state.semiFinalStatus];
     let index = this.getMatchStartIndex(semiFinalStatus);
     semiFinalStatus[index] = 1;
-    this.setState({
-      semiFinalStatus: semiFinalStatus
-    }, () => {
+    this.setState({ semiFinalStatus: semiFinalStatus }, () => {
       this.getSemiFinalResults(index);
     })
   }
@@ -243,9 +233,8 @@ class Game extends React.Component {
       semiFinalStatus[matchId] = 2;
       setTimeout(() => {
         this.setState({ semiFinalStatus: semiFinalStatus, semiFinal: semiFinal });
-        this.getSemiFinalResults(matchId + 1)
-      }
-        , 1000);
+        this.getSemiFinalResults(matchId + 1);
+      }, 1000);
     }
     else {
       this.startTournament();
@@ -256,11 +245,9 @@ class Game extends React.Component {
     let finalStatus = [...this.state.finalStatus];
     let index = this.getMatchStartIndex(finalStatus);
     finalStatus[index] = 1;
-    this.setState({
-      finalStatus: finalStatus
-    }, () => {
+    this.setState({ finalStatus: finalStatus }, () => {
       this.getFinalResults(index);
-    })
+    });
   }
 
   getFinalResults = (matchId) => {
@@ -284,9 +271,8 @@ class Game extends React.Component {
       finalStatus[matchId] = 2;
       setTimeout(() => {
         this.setState({ finalStatus: finalStatus, final: final });
-        this.getFinalResults(matchId + 1)
-      }
-        , 1000);
+        this.getFinalResults(matchId + 1);
+      }, 1000);
     }
     else {
       this.startTournament();
@@ -301,10 +287,10 @@ class Game extends React.Component {
           <Groups groups={state.groups} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ state.groupStage } groupStageStatus={state.groupStageStatus} position={ 'left' } />
+          <GroupStage groupStage={state.groupStage} groupStageStatus={state.groupStageStatus} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier qualifier={ state.qualifier } qualifierStatus={ state.qualifierStatus } position={ 'left' } />
+          <Qualifier qualifier={state.qualifier} qualifierStatus={state.qualifierStatus} position={'left'} />
         </div>
         <div className='teams-wrapper'>
           <QuarterFinal quarterFinal={state.quarterFinal} position={'left'} />
@@ -322,10 +308,10 @@ class Game extends React.Component {
           <QuarterFinal quarterFinal={state.quarterFinal} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <Qualifier qualifier={ state.qualifier } qualifierStatus={ state.qualifierStatus } position={ 'right' } />
+          <Qualifier qualifier={state.qualifier} qualifierStatus={state.qualifierStatus} position={'right'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={ state.groupStage } groupStageStatus={state.groupStageStatus} position={ 'right' } />
+          <GroupStage groupStage={state.groupStage} groupStageStatus={state.groupStageStatus} position={'right'} />
         </div>
         <div className='teams-wrapper'>
           <Groups groups={state.groups} position={'right'} />
