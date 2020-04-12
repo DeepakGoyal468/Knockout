@@ -47,13 +47,13 @@ class Game extends React.Component {
       this.getQualifierResults();
     }
     else if (!isQuarterFinalDone) {
-      this.getQuarterFinalResults(this.state.qualifier);
+      this.getQuarterFinalResults();
     }
     else if (!isSemiFinalDone) {
-      this.getSemiFinalResults(this.state.quarterFinal);
+      this.getSemiFinalResults();
     }
     else if (!isFinalDone) {
-      this.getFinalResults(this.state.semiFinal);
+      this.getFinalResults();
     }
   }
 
@@ -109,37 +109,49 @@ class Game extends React.Component {
   getQualifierResults = () => {
     let qualifierDetails = [];
     let groupStage = this.state.groupStage;
+    let groupStageStatus = this.state.groupStageStatus;
     for (let i = 0; i < groupStage.length; i++) {
-      let team = [];
-      if (i % 2) {
-        team.push(groupStage[i].winner, groupStage[i - 1].runnerup);
-      }
-      else {
-        team.push(groupStage[i].winner, groupStage[i + 1].runnerup);
-      }
-      let result = this.getResults(team);
-      qualifierDetails.push({
-        winner: result.winner, looser: result.runnerup
-      });
+      setTimeout(() => {
+        let team = [];
+        groupStageStatus[i] = 1;
+        this.setstate({ groupStageStatus: groupStageStatus })
+        if (i % 2) {
+          team.push(groupStage[i].winner, groupStage[i - 1].runnerup);
+        }
+        else {
+          team.push(groupStage[i].winner, groupStage[i + 1].runnerup);
+        }
+        let result = this.getResults(team);
+        qualifierDetails.push({
+          winner: result.winner, looser: result.runnerup
+        });
+        groupStageStatus[i] = 2;
+        this.setstate({ groupStageStatus: groupStageStatus, qualifier: qualifierDetails })
+      }, 1000 * i);
+
     }
     this.setState({ qualifier: qualifierDetails }, () => {
       this.startTournament();;
     });
   }
 
-  getQuarterFinalResults = (data) => {
+  getQuarterFinalResults = () => {
     let quarterFinalDetails = [];
-    let track = new Array(data.length).fill(0);
-    for (let i = 0; i < data.length - 2; i++) {
+    let qualifier = this.state.qualifier;
+    let quarterFinalStatus = this.state.quarterFinalStatus;
+    let track = new Array(qualifier.length).fill(0);
+    for (let i = 0; i < qualifier.length - 2; i++) {
       let team = [];
+      quarterFinalStatus[i] = 1;
       if (track[i] === 0) {
-        team.push(data[i].winner, data[i + 2].winner);
+        team.push(qualifier[i].winner, qualifier[i + 2].winner);
         track[i] = 1;
         track[i + 2] = 1;
         let result = this.getResults(team);
         quarterFinalDetails.push({
           winner: result.winner, looser: result.runnerup
         });
+        quarterFinalStatus[i] = 1;
       }
     }
     this.setState({ quarterFinal: quarterFinalDetails }, () => {
@@ -147,20 +159,25 @@ class Game extends React.Component {
     });
   }
 
-  getSemiFinalResults = (data) => {
+  getSemiFinalResults = () => {
     let semiFinalDetails = [];
-    let track = new Array(data.length).fill(0);
-    for (let i = 0; i < data.length - 2; i++) {
+    let quarterFinal = this.state.quarterFinal;
+    let semiFinalStatus = this.state.semiFinalStatus;
+    let track = new Array(quarterFinal.length).fill(0);
+    for (let i = 0; i < quarterFinal.length - 2; i++) {
       let team = [];
+      semiFinalStatus[i] = 1;
       if (track[i] === 0) {
-        team.push(data[i].winner, data[i + 2].winner);
+        team.push(quarterFinal[i].winner, quarterFinal[i + 2].winner);
         track[i] = 1;
         track[i + 2] = 1;
         let result = this.getResults(team);
         semiFinalDetails.push({
           winner: result.winner, looser: result.runnerup
         });
+        semiFinalStatus[i] = 2;
       }
+
     }
     this.setState({ semiFinal: semiFinalDetails }, () => {
       this.startTournament();
@@ -169,12 +186,14 @@ class Game extends React.Component {
 
   getFinalResults = (data) => {
     let finalMatchDetails = [];
-    for (let i = 0; i < data.length; i++) {
+    let semiFinal = this.state.semiFinal;
+    let finalStatus = this.state.finalStatus;
+    for (let i = 0; i < semiFinal.length; i++) {
       let team = [];
       if (i % 2)
-        team.push(data[i].looser, data[i - 1].looser);
+        team.push(semiFinal[i].looser, semiFinal[i - 1].looser);
       else
-        team.push(data[i].winner, data[i + 1].winner);
+        team.push(semiFinal[i].winner, semiFinal[i + 1].winner);
       let result = this.getResults(team);
       finalMatchDetails.push({
         winner: result.winner, looser: result.runnerup
