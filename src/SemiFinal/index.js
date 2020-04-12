@@ -22,7 +22,7 @@ class SemiFinal extends React.Component {
 const SemiFinalItem = (props) => {
   return (
     <div className='semiFinal'>
-      <span className='semiFinalText'>{ props.type } of SemiFinal { props.number }</span>
+      <span className='semiFinalText'>{ props.type } of Semifinal { props.number }</span>
       <span className='semiFinalResult'>{ props.result ? props.result : '---' }</span>
     </div>
   );

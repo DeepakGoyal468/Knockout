@@ -250,9 +250,10 @@ class Game extends React.Component {
           <Groups groups={state.groups} position={'left'} />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={state.groupStage} position={'left'} />
+          <GroupStage groupStage={ state.groupStage } groupStageStatus={state.groupStageStatus} position={ 'left' } />
         </div>
         <div className='teams-wrapper'>
+          <Qualifier qualifier={ state.qualifier } qualifierStatus={ state.qualifierStatus } position={ 'left' } />
         </div>
         <div className='teams-wrapper'>
           <QuarterFinal quarterFinal={state.quarterFinal} position={'left'} />
@@ -270,9 +271,10 @@ class Game extends React.Component {
           <QuarterFinal quarterFinal={state.quarterFinal} position={'right'} />
         </div>
         <div className='teams-wrapper'>
+          <Qualifier qualifier={ state.qualifier } qualifierStatus={ state.qualifierStatus } position={ 'right' } />
         </div>
         <div className='teams-wrapper'>
-          <GroupStage groupStage={state.groupStage} position={'right'} />
+          <GroupStage groupStage={ state.groupStage } groupStageStatus={state.groupStageStatus} position={ 'right' } />
         </div>
         <div className='teams-wrapper'>
           <Groups groups={state.groups} position={'right'} />
